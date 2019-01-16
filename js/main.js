@@ -11,6 +11,43 @@ db.transaction(tx => {
   );
 });
 
+document.querySelector("#airlines").addEventListener("change", () => {
+  let leavForm = document.querySelector("#leavingFrom");
+  let goingTo = document.querySelector("#goingTo");
+  let airLines = document.querySelector("#airlines");
+  leavForm.innerHTML = "";
+  goingTo.innerHTML = "";
+  var routes;
+  if (airLines.value === "US-Bangla") {
+    routes = ["Chittagong|Chittagong", "Dhaka|Dhaka"];
+  } else if (airLines.value === "Regent Airways") {
+    routes = ["Chittagong|Chittagong", "Borisal|Borisal", "Bogura|Bogura"];
+  } else if (airLines.value === "Novoair") {
+    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Bogura|Bogura"];
+  } else if (airLines.value === "Biman Bangladesh") {
+    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Cox-Bazar|Cox-Bazar"];
+  } else {
+    routes = ["None|None"];
+  }
+  console.log(routes);
+
+  for (const route in routes) {
+    let routeLines = routes[route].split("|");
+    let newOption = document.createElement("option");
+    newOption.value = routeLines[0];
+    newOption.textContent = routeLines[1];
+    leavForm.appendChild(newOption);
+  }
+
+  for (const route in routes) {
+    let routeLines = routes[route].split("|");
+    let newOption = document.createElement("option");
+    newOption.value = routeLines[0];
+    newOption.textContent = routeLines[1];
+    goingTo.appendChild(newOption);
+  }
+});
+
 document.querySelector("#btnSubmit").addEventListener("click", () => {
   let userTitle = document.querySelector("#title").value;
   let userFirstName = document.querySelector("#fName").value;
@@ -20,7 +57,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
   let ticketClass = document.querySelector('input[name="ticketClass"]:checked')
     .value;
 
-  let mealList = document.getElementsByName("mealList[]");
+  let mealList = document.getElementsByName("mealList");
 
   let leavingFrom = document.querySelector("#leavingFrom").value;
   let goingTo = document.querySelector("#goingTo").value;
@@ -109,6 +146,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
 });
 
 function editInfo(id) {
+  document.getElementById("main-form").reset();
   db.transaction(tx => {
     tx.executeSql(
       "Select * From TicketBooking Where id = ? ",
@@ -122,9 +160,7 @@ function editInfo(id) {
         let lName = name[2];
 
         let meals = data.mealList.split(",");
-        for (let i = 0; i < meals.length; i++) {
-          console.log(meals[i]);
-        }
+
         let btnUpdate;
         if (document.querySelector("#controlsBtn #btnSubmit")) {
           document.querySelector("#controlsBtn #btnSubmit").remove();
@@ -158,14 +194,17 @@ function editInfo(id) {
           }
         }
 
-        let mealLists = document.getElementsByName("mealList[]");
+        let mealLists = document.getElementsByName("mealList");
 
         for (let i = 0; i < mealLists.length; i++) {
-          if (mealLists[i].value === meals[i]) {
-            console.log(meals[i].toLowerCase());
-            mealLists[i].checked = true;
-          } else {
-            mealLists[i].checked = false;
+          for (let j = 0; j < meals.length; j++) {
+            if (mealLists[i].value === meals[j]) {
+              console.log("call");
+              mealLists[i].checked = true;
+            } else {
+              console.log("continue");
+              continue;
+            }
           }
         }
         document.querySelector("#leavingFrom").value = data.leavingFrom;
@@ -182,9 +221,8 @@ function upInfo() {
   let userLastName = document.querySelector("#main-form #lName").value;
   let userEmail = document.querySelector("#main-form #email").value;
   let airlines = document.querySelector("#main-form #airlines").value;
-  let ticketClass = document.querySelector(
-    '#main-form input[name="ticketClass"]:checked'
-  ).value;
+  let ticketClass = document.querySelector('input[name="ticketClass"]:checked')
+    .value;
   let leavingFrom = document.querySelector("#main-form #leavingFrom").value;
   let goingTo = document.querySelector("#main-form #goingTo").value;
 
@@ -220,6 +258,52 @@ function deleteInfo(id) {
   });
 }
 
-// window.onload = function() {
-//   db.transaction(tx => {});
-// };
+window.onload = function() {
+  db.transaction(tx => {
+    tx.executeSql("Select * From TicketBooking", [], (tx, data) => {
+      let dataLength = data.rows.length;
+
+      for (let i = 0; i < dataLength; i++) {
+        let tableRow = document.createElement("tr");
+        let uId = document.createElement("td");
+        let uName = document.createElement("td");
+        let uEmail = document.createElement("td");
+        let airLines = document.createElement("td");
+        let uTicClass = document.createElement("td");
+        let uMealList = document.createElement("td");
+        let uLeavingFrom = document.createElement("td");
+        let uGongTo = document.createElement("td");
+        let controls = document.createElement("td");
+
+        uId.textContent = data.rows.item(i).id;
+        uName.textContent = data.rows.item(i).name;
+        uEmail.textContent = data.rows.item(i).email;
+        airLines.textContent = data.rows.item(i).airlines;
+        uTicClass.textContent = data.rows.item(i).ticketClass;
+        uMealList.textContent = data.rows.item(i).mealList;
+        uLeavingFrom.textContent = data.rows.item(i).leavingFrom;
+        uGongTo.textContent = data.rows.item(i).goingTo;
+        controls.innerHTML =
+          '<button onclick="editInfo(' +
+          data.rows.item(i).id +
+          ')">Edit</button>' +
+          '<button onclick="deleteInfo(' +
+          data.rows.item(i).id +
+          ')">Delete</button>';
+
+        tableRow.setAttribute("id", "tic" + data.rows.item(i).id);
+        tableRow.appendChild(uId);
+        tableRow.appendChild(uName);
+        tableRow.appendChild(uEmail);
+        tableRow.appendChild(airLines);
+        tableRow.appendChild(uTicClass);
+        tableRow.appendChild(uMealList);
+        tableRow.appendChild(uLeavingFrom);
+        tableRow.appendChild(uGongTo);
+        tableRow.appendChild(controls);
+
+        document.querySelector("#ticketInfo tbody").appendChild(tableRow);
+      }
+    });
+  });
+};
