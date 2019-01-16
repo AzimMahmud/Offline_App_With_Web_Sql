@@ -49,12 +49,24 @@
           </div>
 
           <div class="form-control">
-            <label for="ticketClass">Class</label>
-            <select name="ticketClass" id="ticketClass">
-              <option value="">None</option>
-              <option value="Economy">Economy</option>
-              <option value="Business">Business</option>
-            </select>
+            <label for="ticketClass">
+              Class
+              <input type="radio" name="ticketClass" value="Economy" />Economy
+              <input type="radio" name="ticketClass" value="Business" />Business
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label for="mealList">
+              Meal
+              <input
+                type="checkbox"
+                name="mealList[]"
+                value="Brackfast"
+              />Brackfast
+              <input type="checkbox" name="mealList[]" value="Lunch" />Lunch
+              <input type="checkbox" name="mealList[]" value="Dinner" />Dinner
+            </label>
           </div>
 
           <div class="form-control">
@@ -95,6 +107,7 @@
             <th>Email</th>
             <th>Airlines</th>
             <th>Ticket Class</th>
+            <th>Meals</th>
             <th>Journey From</th>
             <th>Journey To</th>
             <th>Controls</th>

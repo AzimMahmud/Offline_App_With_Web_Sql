@@ -7,7 +7,7 @@ const db = openDatabase(
 
 db.transaction(tx => {
   tx.executeSql(
-    "Create Table If Not Exists TicketBooking (id integer primary key autoincrement, name, email, airlines, ticketClass, leavingFrom, goingTo)"
+    "Create Table If Not Exists TicketBooking (id integer primary key autoincrement, name, email, airlines, mealList, ticketClass, leavingFrom, goingTo)"
   );
 });
 
@@ -17,27 +17,49 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
   let userLastName = document.querySelector("#lName").value;
   let userEmail = document.querySelector("#email").value;
   let airlines = document.querySelector("#airlines").value;
-  let ticketClass = document.querySelector("#ticketClass").value;
+  let ticketClass = document.querySelector('input[name="ticketClass"]:checked')
+    .value;
+
+  let mealList = document.getElementsByName("mealList[]");
+
   let leavingFrom = document.querySelector("#leavingFrom").value;
   let goingTo = document.querySelector("#goingTo").value;
 
-  if (!userFirstName) {
-    document.querySelector("#fName").classList.add("error");
-  } else if (!userEmail) {
-    document.querySelector("#email").classList.add("error");
-  } else if (!airlines) {
-    document.querySelector("#airlines").classList.add("error");
-  } else if (!leavingFrom) {
-    document.querySelector("#leavingFrom").classList.add("error");
-  } else if (!goingTo) {
+  let userMeal = new Array();
+  for (let i = 0; i < mealList.length; i++) {
+    if (mealList[i].checked === true) {
+      userMeal.push(mealList[i].value);
+    }
+  }
+
+  let userMealList = userMeal.join(",");
+
+  // if (!userFirstName) {
+  //   document.querySelector("#fName").classList.add("error");
+  // } else if (!userEmail) {
+  //   document.querySelector("#email").classList.add("error");
+  // } else if (!airlines) {
+  //   document.querySelector("#airlines").classList.add("error");
+  // } else if (!leavingFrom) {
+  //   document.querySelector("#leavingFrom").classList.add("error");
+  // } else
+  if (!goingTo) {
     document.querySelector("#goingTo").classList.add("error");
   } else {
     let name = userTitle + " " + userFirstName + " " + userLastName;
 
     db.transaction(tx => {
       tx.executeSql(
-        "Insert Into TicketBooking ( name, email, airlines, ticketClass, leavingFrom, goingTo) Values (?,?,?,?,?,?)",
-        [name, userEmail, airlines, ticketClass, leavingFrom, goingTo],
+        "Insert Into TicketBooking ( name, email, airlines, ticketClass, mealList, leavingFrom, goingTo) Values (?,?,?,?,?,?,?)",
+        [
+          name,
+          userEmail,
+          airlines,
+          ticketClass,
+          userMealList,
+          leavingFrom,
+          goingTo
+        ],
         (tx, result) => {
           let id = result.insertId;
 
@@ -47,6 +69,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
           let uEmail = document.createElement("td");
           let airLines = document.createElement("td");
           let uTicClass = document.createElement("td");
+          let uMealList = document.createElement("td");
           let uLeavingFrom = document.createElement("td");
           let uGongTo = document.createElement("td");
           let controls = document.createElement("td");
@@ -56,6 +79,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
           uEmail.textContent = userEmail;
           airLines.textContent = airlines;
           uTicClass.textContent = ticketClass;
+          uMealList.textContent = userMealList;
           uLeavingFrom.textContent = leavingFrom;
           uGongTo.textContent = goingTo;
           controls.innerHTML =
@@ -72,6 +96,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
           tableRow.appendChild(uEmail);
           tableRow.appendChild(airLines);
           tableRow.appendChild(uTicClass);
+          tableRow.appendChild(uMealList);
           tableRow.appendChild(uLeavingFrom);
           tableRow.appendChild(uGongTo);
           tableRow.appendChild(controls);
@@ -95,19 +120,54 @@ function editInfo(id) {
         let title = name[0];
         let fName = name[1];
         let lName = name[2];
-        document.querySelector("#controlsBtn #btnSubmit").remove();
-        let btnUpdate = document.createElement("button");
-        btnUpdate.setAttribute("onclick", "upInfo()");
-        btnUpdate.textContent = "Update";
 
-        document.querySelector("#controlsBtn").appendChild(btnUpdate);
+        let meals = data.mealList.split(",");
+        for (let i = 0; i < meals.length; i++) {
+          console.log(meals[i]);
+        }
+        let btnUpdate;
+        if (document.querySelector("#controlsBtn #btnSubmit")) {
+          document.querySelector("#controlsBtn #btnSubmit").remove();
+          btnUpdate = document.createElement("button");
+          btnUpdate.setAttribute("onclick", "upInfo()");
+          btnUpdate.textContent = "Update";
+          document.querySelector("#controlsBtn").appendChild(btnUpdate);
+        }
         document.querySelector("#id").value = data.id;
         document.querySelector("#title").value = title;
         document.querySelector("#fName").value = fName;
         document.querySelector("#lName").value = lName;
         document.querySelector("#email").value = data.email;
-        document.querySelector("#airlines").value = data.airlines;
-        document.querySelector("#ticketClass").value = data.ticketClass;
+
+        let airLine = document.querySelector("#airlines");
+
+        for (let i = 0; i < airLine.length; i++) {
+          if (airLine[i].value === data.airlines) {
+            airLine[i].selected = true;
+          } else {
+            airLine[i].selected = false;
+          }
+        }
+
+        let ticCLassList = document.getElementsByName("ticketClass");
+        for (let i = 0; i < ticCLassList.length; i++) {
+          if (ticCLassList[i].value === data.ticketClass) {
+            ticCLassList[i].checked = true;
+          } else {
+            ticCLassList[i].checked = false;
+          }
+        }
+
+        let mealLists = document.getElementsByName("mealList[]");
+
+        for (let i = 0; i < mealLists.length; i++) {
+          if (mealLists[i].value === meals[i]) {
+            console.log(meals[i].toLowerCase());
+            mealLists[i].checked = true;
+          } else {
+            mealLists[i].checked = false;
+          }
+        }
         document.querySelector("#leavingFrom").value = data.leavingFrom;
         document.querySelector("#goingTo").value = data.goingTo;
       }
@@ -122,7 +182,9 @@ function upInfo() {
   let userLastName = document.querySelector("#main-form #lName").value;
   let userEmail = document.querySelector("#main-form #email").value;
   let airlines = document.querySelector("#main-form #airlines").value;
-  let ticketClass = document.querySelector("#main-form #ticketClass").value;
+  let ticketClass = document.querySelector(
+    '#main-form input[name="ticketClass"]:checked'
+  ).value;
   let leavingFrom = document.querySelector("#main-form #leavingFrom").value;
   let goingTo = document.querySelector("#main-form #goingTo").value;
 
@@ -157,3 +219,7 @@ function deleteInfo(id) {
     table.removeChild(row);
   });
 }
+
+// window.onload = function() {
+//   db.transaction(tx => {});
+// };
