@@ -10,57 +10,22 @@ db.transaction(tx => {
     "Create Table If Not Exists TicketBooking (id integer primary key autoincrement, name, email, airlines, mealList, ticketClass, leavingFrom, goingTo)"
   );
 });
-
-document.querySelector("#airlines").addEventListener("change", () => {
-  let leavForm = document.querySelector("#leavingFrom");
-  let goingTo = document.querySelector("#goingTo");
-  let airLines = document.querySelector("#airlines");
-  leavForm.innerHTML = "";
-  goingTo.innerHTML = "";
-  var routes;
-  if (airLines.value === "US-Bangla") {
-    routes = ["Chittagong|Chittagong", "Dhaka|Dhaka"];
-  } else if (airLines.value === "Regent Airways") {
-    routes = ["Chittagong|Chittagong", "Borisal|Borisal", "Bogura|Bogura"];
-  } else if (airLines.value === "Novoair") {
-    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Bogura|Bogura"];
-  } else if (airLines.value === "Biman Bangladesh") {
-    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Cox-Bazar|Cox-Bazar"];
-  } else {
-    routes = ["None|None"];
-  }
-  console.log(routes);
-
-  for (const route in routes) {
-    let routeLines = routes[route].split("|");
-    let newOption = document.createElement("option");
-    newOption.value = routeLines[0];
-    newOption.textContent = routeLines[1];
-    leavForm.appendChild(newOption);
-  }
-
-  for (const route in routes) {
-    let routeLines = routes[route].split("|");
-    let newOption = document.createElement("option");
-    newOption.value = routeLines[0];
-    newOption.textContent = routeLines[1];
-    goingTo.appendChild(newOption);
-  }
-});
-
 document.querySelector("#btnSubmit").addEventListener("click", () => {
   let userTitle = document.querySelector("#title").value;
   let userFirstName = document.querySelector("#fName").value;
   let userLastName = document.querySelector("#lName").value;
   let userEmail = document.querySelector("#email").value;
   let airlines = document.querySelector("#airlines").value;
-  let ticketClass = document.querySelector('input[name="ticketClass"]:checked')
-    .value;
+  let ticketClass;
 
-  let mealList = document.getElementsByName("mealList");
+  document.querySelector('input[name="ticketClass"]:checked') === null
+    ? (ticketClass = "")
+    : document.querySelector('input[name="ticketClass"]:checked').value;
 
   let leavingFrom = document.querySelector("#leavingFrom").value;
   let goingTo = document.querySelector("#goingTo").value;
+
+  let mealList = document.getElementsByName("mealList");
 
   let userMeal = new Array();
   for (let i = 0; i < mealList.length; i++) {
@@ -71,16 +36,15 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
 
   let userMealList = userMeal.join(",");
 
-  // if (!userFirstName) {
-  //   document.querySelector("#fName").classList.add("error");
-  // } else if (!userEmail) {
-  //   document.querySelector("#email").classList.add("error");
-  // } else if (!airlines) {
-  //   document.querySelector("#airlines").classList.add("error");
-  // } else if (!leavingFrom) {
-  //   document.querySelector("#leavingFrom").classList.add("error");
-  // } else
-  if (!goingTo) {
+  if (!userFirstName) {
+    document.querySelector("#fName").classList.add("error");
+  } else if (!userEmail) {
+    document.querySelector("#email").classList.add("error");
+  } else if (!airlines) {
+    document.querySelector("#airlines").classList.add("error");
+  } else if (!leavingFrom) {
+    document.querySelector("#leavingFrom").classList.add("error");
+  } else if (!goingTo) {
     document.querySelector("#goingTo").classList.add("error");
   } else {
     let name = userTitle + " " + userFirstName + " " + userLastName;
@@ -147,6 +111,15 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
 
 function editInfo(id) {
   document.getElementById("main-form").reset();
+
+  let upBtn = document.querySelector("#btnUpdate");
+  let saveBtn = document.querySelector("#btnSubmit");
+
+  if (upBtn.hidden === true) {
+    upBtn.hidden = false;
+    saveBtn.hidden = true;
+  }
+
   db.transaction(tx => {
     tx.executeSql(
       "Select * From TicketBooking Where id = ? ",
@@ -158,17 +131,8 @@ function editInfo(id) {
         let title = name[0];
         let fName = name[1];
         let lName = name[2];
-
-        let meals = data.mealList.split(",");
-
-        let btnUpdate;
-        if (document.querySelector("#controlsBtn #btnSubmit")) {
-          document.querySelector("#controlsBtn #btnSubmit").remove();
-          btnUpdate = document.createElement("button");
-          btnUpdate.setAttribute("onclick", "upInfo()");
-          btnUpdate.textContent = "Update";
-          document.querySelector("#controlsBtn").appendChild(btnUpdate);
-        }
+        let meals = "";
+        meals = data.mealList.split(",");
         document.querySelector("#id").value = data.id;
         document.querySelector("#title").value = title;
         document.querySelector("#fName").value = fName;
@@ -176,6 +140,9 @@ function editInfo(id) {
         document.querySelector("#email").value = data.email;
 
         let airLine = document.querySelector("#airlines");
+        if (airLine.length !== 0) {
+          destination(data.airlines);
+        }
 
         for (let i = 0; i < airLine.length; i++) {
           if (airLine[i].value === data.airlines) {
@@ -194,15 +161,15 @@ function editInfo(id) {
           }
         }
 
-        let mealLists = document.getElementsByName("mealList");
+        let mealLists = "";
+
+        mealLists = document.getElementsByName("mealList");
 
         for (let i = 0; i < mealLists.length; i++) {
           for (let j = 0; j < meals.length; j++) {
             if (mealLists[i].value === meals[j]) {
-              console.log("call");
               mealLists[i].checked = true;
             } else {
-              console.log("continue");
               continue;
             }
           }
@@ -214,47 +181,70 @@ function editInfo(id) {
   });
 }
 
-function upInfo() {
-  let id = document.querySelector("#main-form #id").value;
-  let userTitle = document.querySelector("#main-form #title").value;
-  let userFirstName = document.querySelector("#main-form #fName").value;
-  let userLastName = document.querySelector("#main-form #lName").value;
-  let userEmail = document.querySelector("#main-form #email").value;
-  let airlines = document.querySelector("#main-form #airlines").value;
-  let ticketClass = document.querySelector('input[name="ticketClass"]:checked')
-    .value;
-  let leavingFrom = document.querySelector("#main-form #leavingFrom").value;
-  let goingTo = document.querySelector("#main-form #goingTo").value;
+document
+  .querySelector("#btnUpdate")
+  .addEventListener("click", function upInfo() {
+    let id = document.querySelector("#main-form #id").value;
+    let userTitle = document.querySelector("#main-form #title").value;
+    let userFirstName = document.querySelector("#main-form #fName").value;
+    let userLastName = document.querySelector("#main-form #lName").value;
+    let userEmail = document.querySelector("#main-form #email").value;
+    let airlines = document.querySelector("#main-form #airlines").value;
+    let ticketClass = document.querySelector(
+      'input[name="ticketClass"]:checked'
+    ).value;
 
-  if (!userFirstName) {
-    document.querySelector("#fName").classList.add("error");
-  } else if (!userEmail) {
-    document.querySelector("#email").classList.add("error");
-  } else if (!airlines) {
-    document.querySelector("#airlines").classList.add("error");
-  } else if (!leavingFrom) {
-    document.querySelector("#leavingFrom").classList.add("error");
-  } else if (!goingTo) {
-    document.querySelector("#goingTo").classList.add("error");
-  } else {
-    let name = userTitle + " " + userFirstName + " " + userLastName;
+    let leavingFrom = document.querySelector("#main-form #leavingFrom").value;
+    let goingTo = document.querySelector("#main-form #goingTo").value;
 
-    db.transaction(tx => {
-      tx.executeSql(
-        "Update TicketBooking Set name = ?, email = ?, airlines = ?, ticketClass = ?, leavingFrom = ?, goingTo = ? Where id = ?",
-        [name, userEmail, airlines, ticketClass, leavingFrom, goingTo, id]
-      );
-    });
-  }
-}
+    let mealList = document.getElementsByName("mealList");
+
+    let userMeal = new Array();
+    for (let i = 0; i < mealList.length; i++) {
+      if (mealList[i].checked === true) {
+        userMeal.push(mealList[i].value);
+      }
+    }
+
+    let userMealList = userMeal.join(",");
+
+    if (!userFirstName) {
+      document.querySelector("#fName").classList.add("error");
+    } else if (!userEmail) {
+      document.querySelector("#email").classList.add("error");
+    } else if (!airlines) {
+      document.querySelector("#airlines").classList.add("error");
+    } else if (!leavingFrom) {
+      document.querySelector("#leavingFrom").classList.add("error");
+    } else if (!goingTo) {
+      document.querySelector("#goingTo").classList.add("error");
+    } else {
+      let name = userTitle + " " + userFirstName + " " + userLastName;
+
+      db.transaction(tx => {
+        tx.executeSql(
+          "Update TicketBooking Set name = ?, email = ?, airlines = ?, ticketClass = ?, mealList = ?, leavingFrom = ?, goingTo = ? Where id = ?",
+          [
+            name,
+            userEmail,
+            airlines,
+            ticketClass,
+            userMealList,
+            leavingFrom,
+            goingTo,
+            id
+          ]
+        );
+      });
+    }
+    location.reload();
+  });
 
 function deleteInfo(id) {
   db.transaction(tx => {
     tx.executeSql("Delete From TicketBooking Where id = ?", [id]);
 
-    let table = document.querySelector("#ticketInfo tbody");
-    let row = document.querySelector("#tic" + id);
-    table.removeChild(row);
+    location.reload();
   });
 }
 
@@ -307,3 +297,38 @@ window.onload = function() {
     });
   });
 };
+
+function destination(data) {
+  let leavForm = document.querySelector("#leavingFrom");
+  let goingTo = document.querySelector("#goingTo");
+  leavForm.innerHTML = "";
+  goingTo.innerHTML = "";
+  var routes;
+  if (data === "US-Bangla") {
+    routes = ["Chittagong|Chittagong", "Dhaka|Dhaka"];
+  } else if (data === "Regent Airways") {
+    routes = ["Chittagong|Chittagong", "Borisal|Borisal", "Bogura|Bogura"];
+  } else if (data === "Novoair") {
+    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Bogura|Bogura"];
+  } else if (data === "Biman Bangladesh") {
+    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Cox-Bazar|Cox-Bazar"];
+  } else {
+    routes = ["None|None"];
+  }
+
+  for (const route in routes) {
+    let routeLines = routes[route].split("|");
+    let newOption = document.createElement("option");
+    newOption.value = routeLines[0];
+    newOption.textContent = routeLines[1];
+    leavForm.appendChild(newOption);
+  }
+
+  for (const route in routes) {
+    let routeLines = routes[route].split("|");
+    let newOption = document.createElement("option");
+    newOption.value = routeLines[0];
+    newOption.textContent = routeLines[1];
+    goingTo.appendChild(newOption);
+  }
+}

@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Offline Application</title>
     <link rel="stylesheet" href="css/main.css" />
+
+    <script></script>
   </head>
 
   <body>
@@ -40,7 +42,11 @@
 
           <div class="form-control">
             <label for="airlines">Airlines</label>
-            <select name="airlines" id="airlines">
+            <select
+              name="airlines"
+              id="airlines"
+              onchange="destination(this.value)"
+            >
               <option value="">None</option>
               <option value="US-Bangla">US-Bangla</option>
               <option value="Regent Airways">Regent Airways</option>
@@ -59,9 +65,24 @@
 
           <div class="form-control">
             <label for="mealList">Meals</label>
-            <input type="checkbox" name="mealList" value="Brackfast" />Brackfast
-            <input type="checkbox" name="mealList" value="Lunch" />Lunch
-            <input type="checkbox" name="mealList" value="Dinner" />Dinner
+            <input
+              type="checkbox"
+              name="mealList"
+              class="mealList"
+              value="Brackfast"
+            />Brackfast
+            <input
+              type="checkbox"
+              name="mealList"
+              class="mealList"
+              value="Lunch"
+            />Lunch
+            <input
+              type="checkbox"
+              name="mealList"
+              class="mealList"
+              value="Dinner"
+            />Dinner
           </div>
 
           <div class="form-control">
@@ -77,6 +98,9 @@
           <div class="form-control" id="controlsBtn">
             <button type="button" id="btnSubmit" name="btnSubmit">
               Submit
+            </button>
+            <button type="button" id="btnUpdate" name="btnUpdate" hidden>
+              Update
             </button>
           </div>
         </form>
