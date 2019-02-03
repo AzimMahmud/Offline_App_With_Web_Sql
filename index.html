@@ -4,16 +4,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Offline Application</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="css/main.css" />
-
-    <script></script>
   </head>
 
   <body>
     <main>
-      <section>
+      <section class="container">
         <h2 class="heading">Book Flight Ticket</h2>
-
         <form action="" method="post" id="main-form">
           <input type="hidden" id="id" value="" />
           <div class="form-control">
@@ -24,22 +27,18 @@
               <option value="Mrs.">Mrs.</option>
             </select>
           </div>
-
           <div class="form-control">
             <label for="fName">First Name</label>
             <input type="text" name="fName" id="fName" />
           </div>
-
           <div class="form-control">
             <label for="lName">Last Name</label>
             <input type="text" name="lName" id="lName" />
           </div>
-
           <div class="form-control">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" />
           </div>
-
           <div class="form-control">
             <label for="airlines">Airlines</label>
             <select
@@ -54,15 +53,13 @@
               <option value="Biman Bangladesh">Biman Bangladesh</option>
             </select>
           </div>
-
           <div class="form-control">
             <label for="ticketClass">
               Class
-              <input type="radio" name="ticketClass" value="Economy" />Economy
-              <input type="radio" name="ticketClass" value="Business" />Business
             </label>
+            <input type="radio" name="ticketClass" value="Economy" />Economy
+            <input type="radio" name="ticketClass" value="Business" />Business
           </div>
-
           <div class="form-control">
             <label for="mealList">Meals</label>
             <input
@@ -84,17 +81,14 @@
               value="Dinner"
             />Dinner
           </div>
-
           <div class="form-control">
             <label for="leavingFrom">Leaving From</label>
             <select name="leavingFrom" id="leavingFrom"> </select>
           </div>
-
           <div class="form-control">
             <label for="goingTo">Going To</label>
             <select name="goingTo" id="goingTo"> </select>
           </div>
-
           <div class="form-control" id="controlsBtn">
             <button type="button" id="btnSubmit" name="btnSubmit">
               Submit
@@ -105,25 +99,28 @@
           </div>
         </form>
       </section>
-
-      <section id="output">
-        <table id="ticketInfo" border="1" style="width: 100%">
+      <section id="output" class="container">
+        <table id="ticketInfo">
+          <caption>
+            Ticket Pruchase Info
+          </caption>
           <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Airlines</th>
-            <th>Ticket Class</th>
-            <th>Meals</th>
-            <th>Journey From</th>
-            <th>Journey To</th>
-            <th>Controls</th>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Airlines</th>
+              <th>Ticket Class</th>
+              <th>Meals</th>
+              <th>Journey From</th>
+              <th>Journey To</th>
+              <th>Controls</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
       </section>
     </main>
-
     <script src="js/main.js"></script>
   </body>
 </html>

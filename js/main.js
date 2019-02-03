@@ -18,9 +18,9 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
   let airlines = document.querySelector("#airlines").value;
   let ticketClass;
 
-  document.querySelector('input[name="ticketClass"]:checked') === null
-    ? (ticketClass = "")
-    : document.querySelector('input[name="ticketClass"]:checked').value;
+  document.querySelector('input[name="ticketClass"]:checked') === null ?
+    (ticketClass = "") :
+    document.querySelector('input[name="ticketClass"]:checked').value;
 
   let leavingFrom = document.querySelector("#leavingFrom").value;
   let goingTo = document.querySelector("#goingTo").value;
@@ -51,7 +51,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
 
     db.transaction(tx => {
       tx.executeSql(
-        "Insert Into TicketBooking ( name, email, airlines, ticketClass, mealList, leavingFrom, goingTo) Values (?,?,?,?,?,?,?)",
+        "Insert Into TicketBooking(name, email, airlines, ticketClass, mealList, leavingFrom, goingTo) Values (?,?,?,?,?,?,?)",
         [
           name,
           userEmail,
@@ -60,58 +60,13 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
           userMealList,
           leavingFrom,
           goingTo
-        ],
-        (tx, result) => {
-          let id = result.insertId;
-
-          let tableRow = document.createElement("tr");
-          let uId = document.createElement("td");
-          let uName = document.createElement("td");
-          let uEmail = document.createElement("td");
-          let airLines = document.createElement("td");
-          let uTicClass = document.createElement("td");
-          let uMealList = document.createElement("td");
-          let uLeavingFrom = document.createElement("td");
-          let uGongTo = document.createElement("td");
-          let controls = document.createElement("td");
-
-          uId.textContent = id;
-          uName.textContent = name;
-          uEmail.textContent = userEmail;
-          airLines.textContent = airlines;
-          uTicClass.textContent = ticketClass;
-          uMealList.textContent = userMealList;
-          uLeavingFrom.textContent = leavingFrom;
-          uGongTo.textContent = goingTo;
-          controls.innerHTML =
-            '<button onclick="editInfo(' +
-            id +
-            ')">Edit</button>' +
-            '<button onclick="deleteInfo(' +
-            id +
-            ')">Delete</button>';
-
-          tableRow.setAttribute("id", "tic" + id);
-          tableRow.appendChild(uId);
-          tableRow.appendChild(uName);
-          tableRow.appendChild(uEmail);
-          tableRow.appendChild(airLines);
-          tableRow.appendChild(uTicClass);
-          tableRow.appendChild(uMealList);
-          tableRow.appendChild(uLeavingFrom);
-          tableRow.appendChild(uGongTo);
-          tableRow.appendChild(controls);
-
-          document.querySelector("#ticketInfo tbody").appendChild(tableRow);
-        }
+        ]
       );
     });
   }
 });
 
 function editInfo(id) {
-  document.getElementById("main-form").reset();
-
   let upBtn = document.querySelector("#btnUpdate");
   let saveBtn = document.querySelector("#btnSubmit");
 
@@ -166,6 +121,10 @@ function editInfo(id) {
         mealLists = document.getElementsByName("mealList");
 
         for (let i = 0; i < mealLists.length; i++) {
+          mealLists[i].checked = false;
+        }
+
+        for (let i = 0; i < mealLists.length; i++) {
           for (let j = 0; j < meals.length; j++) {
             if (mealLists[i].value === meals[j]) {
               mealLists[i].checked = true;
@@ -190,14 +149,22 @@ document
     let userLastName = document.querySelector("#main-form #lName").value;
     let userEmail = document.querySelector("#main-form #email").value;
     let airlines = document.querySelector("#main-form #airlines").value;
-    let ticketClass = document.querySelector(
-      'input[name="ticketClass"]:checked'
-    ).value;
+    let ticketClass;
+    document.querySelector('input[name="ticketClass"]:checked') === null ?
+      (ticketClass = "") :
+      ticketClass = document.querySelector('input[name="ticketClass"]:checked').value;
+
+
+    console.log(id + userTitle + userFirstName + userLastName + userEmail + airlines + ticketClass);
+
 
     let leavingFrom = document.querySelector("#main-form #leavingFrom").value;
     let goingTo = document.querySelector("#main-form #goingTo").value;
 
     let mealList = document.getElementsByName("mealList");
+
+    console.log(id + userTitle + userFirstName + userLastName + userEmail + airlines + ticketClass + leavingFrom + goingTo);
+
 
     let userMeal = new Array();
     for (let i = 0; i < mealList.length; i++) {
@@ -248,7 +215,7 @@ function deleteInfo(id) {
   });
 }
 
-window.onload = function() {
+window.onload = function () {
   db.transaction(tx => {
     tx.executeSql("Select * From TicketBooking", [], (tx, data) => {
       let dataLength = data.rows.length;
@@ -274,12 +241,12 @@ window.onload = function() {
         uLeavingFrom.textContent = data.rows.item(i).leavingFrom;
         uGongTo.textContent = data.rows.item(i).goingTo;
         controls.innerHTML =
-          '<button onclick="editInfo(' +
+          '<button class="edit-icon" onclick="editInfo(' +
           data.rows.item(i).id +
-          ')">Edit</button>' +
-          '<button onclick="deleteInfo(' +
+          ')"><i class="fas fa-edit"></i></button>' +
+          '<button class="delete-icon" onclick="deleteInfo(' +
           data.rows.item(i).id +
-          ')">Delete</button>';
+          ')"><i class="fas fa-trash-alt"></i></button>';
 
         tableRow.setAttribute("id", "tic" + data.rows.item(i).id);
         tableRow.appendChild(uId);
