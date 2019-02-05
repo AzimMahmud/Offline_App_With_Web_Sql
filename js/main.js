@@ -19,8 +19,8 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
   let ticketClass;
 
   document.querySelector('input[name="ticketClass"]:checked') === null ?
-    (ticketClass = "") :
-    document.querySelector('input[name="ticketClass"]:checked').value;
+    ticketClass = "" :
+    ticketClass = document.querySelector('input[name="ticketClass"]:checked').value;
 
   let leavingFrom = document.querySelector("#leavingFrom").value;
   let goingTo = document.querySelector("#goingTo").value;
@@ -39,14 +39,19 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
   if (!userFirstName) {
     document.querySelector("#fName").classList.add("error");
   } else if (!userEmail) {
+    document.querySelector("#fName").classList.remove("error");
     document.querySelector("#email").classList.add("error");
   } else if (!airlines) {
+    document.querySelector("#email").classList.remove("error");
     document.querySelector("#airlines").classList.add("error");
-  } else if (!leavingFrom) {
+  } else if (leavingFrom === "None") {
+    document.querySelector("#airlines").classList.remove("error");
     document.querySelector("#leavingFrom").classList.add("error");
-  } else if (!goingTo) {
+  } else if (goingTo === "None") {
+    document.querySelector("#leavingFrom").classList.remove("error");
     document.querySelector("#goingTo").classList.add("error");
   } else {
+    document.querySelector("#goingTo").classList.remove("error");
     let name = userTitle + " " + userFirstName + " " + userLastName;
 
     db.transaction(tx => {
@@ -64,6 +69,7 @@ document.querySelector("#btnSubmit").addEventListener("click", () => {
       );
     });
   }
+  document.querySelector('#main-form').reset();
 });
 
 function editInfo(id) {
@@ -174,18 +180,22 @@ document
     }
 
     let userMealList = userMeal.join(",");
-
     if (!userFirstName) {
       document.querySelector("#fName").classList.add("error");
     } else if (!userEmail) {
+      document.querySelector("#fName").classList.remove("error");
       document.querySelector("#email").classList.add("error");
     } else if (!airlines) {
+      document.querySelector("#email").classList.remove("error");
       document.querySelector("#airlines").classList.add("error");
-    } else if (!leavingFrom) {
+    } else if (leavingFrom === "None") {
+      document.querySelector("#airlines").classList.remove("error");
       document.querySelector("#leavingFrom").classList.add("error");
-    } else if (!goingTo) {
+    } else if (goingTo === "None") {
+      document.querySelector("#leavingFrom").classList.remove("error");
       document.querySelector("#goingTo").classList.add("error");
     } else {
+      document.querySelector("#goingTo").classList.remove("error");
       let name = userTitle + " " + userFirstName + " " + userLastName;
 
       db.transaction(tx => {
@@ -210,9 +220,8 @@ document
 function deleteInfo(id) {
   db.transaction(tx => {
     tx.executeSql("Delete From TicketBooking Where id = ?", [id]);
-
-    location.reload();
   });
+  location.reload();
 }
 
 window.onload = function () {
@@ -241,12 +250,12 @@ window.onload = function () {
         uLeavingFrom.textContent = data.rows.item(i).leavingFrom;
         uGongTo.textContent = data.rows.item(i).goingTo;
         controls.innerHTML =
-          '<button class="edit-icon" onclick="editInfo(' +
+          '<span class="edit-icon" onclick="editInfo(' +
           data.rows.item(i).id +
-          ')"><i class="fas fa-edit"></i></button>' +
-          '<button class="delete-icon" onclick="deleteInfo(' +
+          ')"><i class="fas fa-edit"></i></span>' +
+          '<span class="delete-icon" onclick="deleteInfo(' +
           data.rows.item(i).id +
-          ')"><i class="fas fa-trash-alt"></i></button>';
+          ')"><i class="fas fa-trash-alt"></i></span>';
 
         tableRow.setAttribute("id", "tic" + data.rows.item(i).id);
         tableRow.appendChild(uId);
@@ -272,13 +281,13 @@ function destination(data) {
   goingTo.innerHTML = "";
   var routes;
   if (data === "US-Bangla") {
-    routes = ["Chittagong|Chittagong", "Dhaka|Dhaka"];
+    routes = ["None|None", "Chittagong|Chittagong", "Dhaka|Dhaka"];
   } else if (data === "Regent Airways") {
-    routes = ["Chittagong|Chittagong", "Borisal|Borisal", "Bogura|Bogura"];
+    routes = ["None|None", "Chittagong|Chittagong", "Borisal|Borisal", "Bogura|Bogura"];
   } else if (data === "Novoair") {
-    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Bogura|Bogura"];
+    routes = ["None|None", "Dhaka|Dhaka", "Rangpur|Rangpur", "Bogura|Bogura"];
   } else if (data === "Biman Bangladesh") {
-    routes = ["Dhaka|Dhaka", "Rangpur|Rangpur", "Cox-Bazar|Cox-Bazar"];
+    routes = ["None|None", "Dhaka|Dhaka", "Rangpur|Rangpur", "Cox-Bazar|Cox-Bazar"];
   } else {
     routes = ["None|None"];
   }

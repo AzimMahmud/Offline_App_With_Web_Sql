@@ -5,6 +5,7 @@
 .container {
   margin: 0 auto;
   width: 1020px;
+  margin-bottom: 50px;
 }
 
 .heading {
@@ -121,44 +122,37 @@
   color: #fff;
 }
 
-#ticketInfo tbody td button.edit-icon,
-#ticketInfo tbody td button.delete-icon {
-  background-color: #3A6FB3;
+#ticketInfo .edit-icon,
+#ticketInfo .delete-icon {
   border: none;
   margin: 0;
-  padding: 0;
-  border-radius: 5px;
+  padding: 5px;
+  border-radius: 2px;
   float: left;
+  color: #2c3e50;
 }
 
-#ticketInfo tbody td button.edit-icon {
+#ticketInfo .edit-icon {
   margin-right: 10px;
 }
 
-#ticketInfo tbody td button.edit-icon i {
-  background: #313a46;
+#ticketInfo edit-icon {
   color: #fff;
-  font-size: 12px;
-  padding: 5px;
-  border-radius: 2px;
-  width: 25px;
-  height: 15px;
+  font-size: 10px;
 }
 
-#ticketInfo tbody td button.edit-icon i:hover {
-  background: #57606def
-}
-
-#ticketInfo tbody td button.delete-icon i {
-  background: #1d232b;
+#ticketInfo .edit-icon:hover {
+  background: #2c3e50;
   color: #fff;
-  font-size: 12px;
-  padding: 5px;
-  border-radius: 2px;
-  width: 25px;
-  height: 15px;
+  cursor: pointer;
 }
 
-#ticketInfo tbody td button.delete-icon i:hover {
-  background: #e64d4d;
+#ticketInfo .delete-icon {
+  font-size: 15px;
+}
+
+#ticketInfo .delete-icon:hover {
+  background: #c05959;
+  cursor: pointer;
+  color: #fff;
 }
