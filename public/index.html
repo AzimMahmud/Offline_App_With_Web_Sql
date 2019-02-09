@@ -1,0 +1,119 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Offline Application</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body>
+  <main>
+    <section class="container">
+      <h2 class="heading">Book Flight Ticket</h2>
+      <form action="/upload" method="post" id="main-form" enctype="multipart/form-data">
+        <input type="hidden" id="id" value="" />
+        <div class="form-control">
+          <label for="title">Title</label>
+          <select name="title" id="title">
+            <option value="">None</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Mrs.">Mrs.</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="fName">First Name</label>
+          <input type="text" name="fName" id="fName" />
+        </div>
+        <div class="form-control">
+          <label for="lName">Last Name</label>
+          <input type="text" name="lName" id="lName" />
+        </div>
+        <div class="form-control">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" />
+        </div>
+        <div class="form-control">
+          <label for="airlines">Airlines</label>
+          <select name="airlines" id="airlines" onchange="destination(this.value)">
+            <option value="">None</option>
+            <option value="US-Bangla">US-Bangla</option>
+            <option value="Regent Airways">Regent Airways</option>
+            <option value="Novoair">Novoair</option>
+            <option value="Biman Bangladesh">Biman Bangladesh</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="ticketClass">
+            Class
+          </label>
+          <input type="radio" name="ticketClass" value="Economy" />Economy
+          <input type="radio" name="ticketClass" value="Business" />Business
+        </div>
+        <div class="form-control">
+          <label for="mealList">Meals</label>
+          <input type="checkbox" name="mealList" class="mealList" value="Brackfast" />Brackfast
+          <input type="checkbox" name="mealList" class="mealList" value="Lunch" />Lunch
+          <input type="checkbox" name="mealList" class="mealList" value="Dinner" />Dinner
+        </div>
+        <div class="form-control">
+          <label for="leavingFrom">Leaving From</label>
+          <select name="leavingFrom" id="leavingFrom">
+            <option value="">None</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="goingTo">Going To</label>
+          <select name="goingTo" id="goingTo">
+            <option value="">None</option>
+          </select>
+        </div>
+        <div class="form-control" id="imageFile" hidden>
+
+        </div>
+        <div class="form-control">
+          <label for="fileUpload">Upload File</label>
+          <input type="file" name="fileUpload" id="fileUpload" />
+        </div>
+
+        <div class="form-control" id="controlsBtn">
+          <button type="submit" id="btnSubmit" name="btnSubmit">
+            Submit
+          </button>
+          <button type="submit" id="btnUpdate" name="btnUpdate" hidden>
+            Update
+          </button>
+        </div>
+      </form>
+    </section>
+    <section id="output" class="container">
+      <table id="ticketInfo">
+        <caption>
+          Ticket Pruchase Info
+        </caption>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Airlines</th>
+            <th>Ticket Class</th>
+            <th>Meals</th>
+            <th>Journey From</th>
+            <th>Journey To</th>
+            <th>File</th>
+            <th>Controls</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

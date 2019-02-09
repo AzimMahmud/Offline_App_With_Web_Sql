@@ -1,0 +1,13 @@
+{
+  "name": "Offline_App_With_Web_Sql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/AzimMahmud/Offline_App_With_Web_Sql.git",
+  "author": "Azim Mahmud <mahamud.azim@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "multer": "^1.4.1",
+    "sanitize-filename": "^1.6.1"
+  }
+}
