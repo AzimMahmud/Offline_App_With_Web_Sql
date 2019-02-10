@@ -11,18 +11,16 @@ db.transaction(tx => {
   );
 });
 
+// Get Filename
 let filename;
-
 var fileupload = document.getElementById("fileUpload");
-fileupload.addEventListener("change", function (event) {
+fileupload.addEventListener("change", function(event) {
   var files = fileupload.files;
-  filename = files[0].name;
+  filename = encodeURI(files[0].name);
 });
 
+// Save Data
 let submitBtn = document.querySelector("#btnSubmit");
-
-
-
 
 submitBtn.addEventListener("click", () => {
   document.querySelector("#main-form").addEventListener("submit", () => {
@@ -34,11 +32,11 @@ submitBtn.addEventListener("click", () => {
 
     let ticketClass;
 
-    document.querySelector('input[name="ticketClass"]:checked') === null ?
-      (ticketClass = "") :
-      (ticketClass = document.querySelector(
-        'input[name="ticketClass"]:checked'
-      ).value);
+    document.querySelector('input[name="ticketClass"]:checked') === null
+      ? (ticketClass = "")
+      : (ticketClass = document.querySelector(
+          'input[name="ticketClass"]:checked'
+        ).value);
 
     let leavingFrom = document.querySelector("#leavingFrom").value;
     let goingTo = document.querySelector("#goingTo").value;
@@ -90,8 +88,7 @@ submitBtn.addEventListener("click", () => {
   });
 });
 
-
-
+// Edit Function
 function editInfo(id) {
   let upBtn = document.querySelector("#btnUpdate");
   let saveBtn = document.querySelector("#btnSubmit");
@@ -182,6 +179,7 @@ function editInfo(id) {
   });
 }
 
+// Update Function
 let updateBtn = document.querySelector("#btnUpdate");
 
 updateBtn.addEventListener(
@@ -197,11 +195,11 @@ updateBtn.addEventListener(
         let userEmail = document.querySelector("#main-form #email").value;
         let airlines = document.querySelector("#main-form #airlines").value;
         let ticketClass;
-        document.querySelector('input[name="ticketClass"]:checked') === null ?
-          (ticketClass = "") :
-          (ticketClass = document.querySelector(
-            'input[name="ticketClass"]:checked'
-          ).value);
+        document.querySelector('input[name="ticketClass"]:checked') === null
+          ? (ticketClass = "")
+          : (ticketClass = document.querySelector(
+              'input[name="ticketClass"]:checked'
+            ).value);
 
         let leavingFrom = document.querySelector("#main-form #leavingFrom")
           .value;
@@ -258,6 +256,7 @@ updateBtn.addEventListener(
   false
 );
 
+// Delete Function
 function deleteInfo(id) {
   db.transaction(tx => {
     tx.executeSql("Delete From TicketBooking Where id = ?", [id]);
@@ -265,7 +264,9 @@ function deleteInfo(id) {
   location.reload();
 }
 
-window.onload = function () {
+// Show Data On Load
+
+window.onload = function() {
   db.transaction(tx => {
     tx.executeSql("Select * From TicketBooking", [], (tx, data) => {
       let dataLength = data.rows.length;
@@ -322,6 +323,7 @@ window.onload = function () {
   });
 };
 
+// Get Destination Select
 function destination(data) {
   let leavForm = document.querySelector("#leavingFrom");
   let goingTo = document.querySelector("#goingTo");
